@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TalentMatch AI</title>
+<style>
+:root{--bg:#f6f7f9;--sf:#fff;--tx:#1b2430;--mu:#5d6b7c;--bd:#dfe4ea;--ac:#0f6d68;--ac2:#e3f3f1;--wn:#fff4dc;--wnt:#7a5200;--er:#b3261e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12161b;--sf:#1b2128;--tx:#e8edf2;--mu:#9aa7b5;--bd:#2c3540;--ac:#4cc2ba;--ac2:#17302f;--wn:#3a2e12;--wnt:#f0cf85;--er:#ff8a80}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12161b;--sf:#1b2128;--tx:#e8edf2;--mu:#9aa7b5;--bd:#2c3540;--ac:#4cc2ba;--ac2:#17302f;--wn:#3a2e12;--wnt:#f0cf85;--er:#ff8a80}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{padding:18px 20px;background:var(--sf);border-bottom:1px solid var(--bd)}
+header h1{margin:0;font-size:20px;letter-spacing:-.2px}header h1 b{color:var(--ac)}
+header p{margin:2px 0 0;color:var(--mu);font-size:13px}
+.wrap{max-width:1180px;margin:0 auto;padding:16px;display:grid;grid-template-columns:230px 1fr;gap:16px}
+@media(max-width:820px){.wrap{grid-template-columns:1fr}}
+nav{display:flex;flex-direction:column;gap:6px}
+@media(max-width:820px){nav{flex-direction:row;overflow-x:auto;padding-bottom:4px}}
+nav button{all:unset;cursor:pointer;padding:10px 12px;border:1px solid var(--bd);background:var(--sf);border-radius:10px;font-size:14px;white-space:nowrap}
+nav button small{display:block;color:var(--mu);font-size:11.5px}
+nav button.on{border-color:var(--ac);background:var(--ac2);font-weight:600}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:17px}.card .d{color:var(--mu);font-size:13px;margin-bottom:12px}
+label{display:block;font-size:12.5px;font-weight:600;margin:10px 0 4px}
+label i{font-weight:400;color:var(--mu);font-style:normal}
+input,textarea,select{width:100%;font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:8px 10px}
+textarea{min-height:84px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--ac);outline-offset:-1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:620px){.row{grid-template-columns:1fr}}
+.cand{border:1px dashed var(--bd);border-radius:10px;padding:10px;margin-top:10px}
+.cand h3{margin:0;font-size:13px;color:var(--ac)}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button.p,button.s{font:inherit;cursor:pointer;border-radius:8px;padding:8px 14px;border:1px solid var(--ac)}
+button.p{background:var(--ac);color:#fff}button.s{background:transparent;color:var(--ac)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) button.p{color:#0a1f1e}}
+button:disabled{opacity:.5;cursor:not-allowed}
+.warn{background:var(--wn);color:var(--wnt);border-radius:8px;padding:9px 12px;font-size:13px;margin-top:10px}
+.err{color:var(--er);font-size:13px;margin-top:8px}
+.out{min-height:60px}.out .ph{color:var(--mu)}
+.md{overflow-wrap:anywhere}.md h1,.md h2,.md h3{margin:18px 0 6px;line-height:1.25}.md h1{font-size:19px}.md h2{font-size:16.5px}.md h3{font-size:15px}
+.md ul,.md ol{padding-left:22px}.md hr{border:0;border-top:1px solid var(--bd)}
+.tw{overflow-x:auto;margin:8px 0}.md table{border-collapse:collapse;font-size:13px;min-width:100%}
+.md th,.md td{border:1px solid var(--bd);padding:6px 8px;text-align:left;vertical-align:top}.md th{background:var(--ac2)}
+.foot{font-size:12px;color:var(--mu);padding:4px 2px 24px}
+details summary{cursor:pointer;font-weight:600;font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>Talent<b>Match</b> AI</h1><p>Asistente inteligente de selección por competencias · STAR · escala 1–5 · decisión final siempre humana</p></header>
+<div class="wrap">
+<nav id="nav"></nav>
+<main>
+<div class="card"><details open><summary>Configuración de API & Contexto del proceso</summary>
+<label for="g_key">Google Gemini API Key *</label>
+<input id="g_key" type="password" placeholder="Pega tu API Key de Google AI Studio (AIzaSy...)" style="margin-bottom:12px;">
+<label for="g_puesto">Puesto a cubrir *</label><input id="g_puesto" placeholder="Ej.: Supervisor de Producción">
+<label for="g_resp">Principales responsabilidades <i>(si las dejás vacías, la IA marcará lo propuesto como borrador a validar)</i></label><textarea id="g_resp" placeholder="Funciones principales, tamaño del equipo, turnos, indicadores que maneja…"></textarea>
+<label for="g_comp">Competencias técnicas y conductuales <i>(opcional; si no, la IA las propone)</i></label><textarea id="g_comp" style="min-height:60px"></textarea>
+<div class="btns"><button class="s" id="ex" type="button">Cargar caso de ejemplo: Supervisor de Producción</button></div>
+</details></div>
+<div id="mod"></div>
+<div class="card"><h2>Resultado</h2><div class="d" id="st">Aún no se generó nada.</div>
+<div class="out md" id="out"><span class="ph">La respuesta de la IA aparecerá aquí.</span></div>
+<div class="btns"><button class="s" id="stop" type="button" hidden>Detener</button><button class="s" id="cp" type="button" disabled>Copiar</button><button class="s" id="dl" type="button" disabled>Descargar .md</button></div></div>
+<div class="foot">Uso ético: trabajá con códigos de candidato, sin datos personales irrelevantes. Las valoraciones son apoyo para la decisión: la decisión final corresponde a un profesional humano. No incluyas datos sensibles innecesarios.</div>
+</main></div>
+
+<script>
+"use strict";
+// Puedes dejar la API key fija aquí o dejar que la ingresen desde la interfaz
+let GEMINI_API_KEY = ""; 
+
+const SYSTEM=`Actúa como TalentMatch AI, asistente virtual especializado en Recursos Humanos, selección de personal y gestión del talento humano, con rol de especialista en psicología organizacional y selección por competencias. Asistes a profesionales de RRHH y responsables de contratación para mejorar la calidad, objetividad, eficiencia y transparencia de la contratación. Responde siempre en español.
+FUNCIONES: (A) diseño de perfiles de puesto; (B) entrevistas por competencias con metodología STAR (Situación, Tarea, Acción, Resultado), preguntas técnicas y conductuales, repreguntas de profundización y matrices de evaluación con criterios claros; (C) evaluación estructurada de candidatos, con matriz comparativa y explicación de cada valoración; (D) informes de selección (código del candidato, puesto, competencias evaluadas, evidencias, fortalezas, aspectos por desarrollar, preguntas pendientes de validación, recomendaciones para continuar el proceso).
+ESCALA 1-5: 1 No presenta evidencias de la competencia; 2 Evidencias limitadas; 3 Evidencias suficientes; 4 Evidencias sólidas; 5 Evidencias sobresalientes. Toda puntuación debe estar respaldada por información observable de la entrevista o la documentación profesional (cita la evidencia). No confundas ausencia de información con ausencia de competencia: cuando no haya evidencias suficientes usa la categoría "Pendiente de evaluación".
+PRINCIPIOS ÉTICOS (estrictos): nunca discriminar por género, edad, nacionalidad, religión, orientación sexual, discapacidad, apariencia física u otras características protegidas; no usar fotografías, nombres, domicilios ni datos personales irrelevantes como criterio; no inferir personalidad, inteligencia, compromiso o capacidad laboral a partir de características personales; no recomendar contratación ni exclusión automática; no inventar información ni completar datos faltantes con suposiciones; alertar cuando una pregunta o criterio pueda introducir sesgos; proteger la confidencialidad; priorizar competencias y evidencias directamente relacionadas con el puesto; recordar que la decisión final corresponde a un profesional humano. Si el material recibido contiene datos personales irrelevantes o protegidos, ignóralos como criterio y señálalo.
+ESTILO: profesional, objetivo, claro, directo, respetuoso, neutral, analítico y fundamentado, orientado a soluciones prácticas. Evita respuestas genéricas: da ejemplos concretos, tablas (Markdown) y recomendaciones aplicables al entorno laboral (incluido el industrial cuando corresponda). Prioriza tablas comparativas, listas estructuradas, escalas de valoración e informes ejecutivos. Si falta información imprescindible, indícalo y pide solo lo necesario. Cierra con una sección breve "Posibles sesgos y mejoras del proceso" cuando evalúes o compares.`;
+
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/(^|[^*])\*([^*\n]+)\*/g,"$1<i>$2</i>").replace(/`([^`]+)`/g,"<code>$1</code>");
+
+function md(t){const L=t.split("\n"),o=[];let i=0;
+while(i<L.length){const l=L[i];
+if(/^\s*\|.*\|\s*$/.test(l)&&i+1<L.length&&/^\s*\|[\s:|-]+\|\s*$/.test(L[i+1])){const cells=r=>r.trim().replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+let h="<div class='tw'><table><thead><tr>"+cells(l).map(c=>"<th>"+inl(c)+"</th>").join("")+"</tr></thead><tbody>";i+=2;
+while(i<L.length&&/^\s*\|.*\|\s*$/.test(L[i])){h+="<tr>"+cells(L[i]).map(c=>"<td>"+inl(c)+"</td>").join("")+"</tr>";i++}o.push(h+"</tbody></table></div>");continue}
+let m;if(m=l.match(/^(#{1,4})\s+(.*)/)){const n=Math.min(m[1].length,3);o.push(`<h${n}>${inl(m[2])}</h${n}>`);i++;continue}
+if(/^\s*([-*_])\1{2,}\s*$/.test(l)){o.push("<hr>");i++;continue}
+if(/^\s*[-*•]\s+/.test(l)){let h="<ul>";while(i<L.length&&/^\s*[-*•]\s+/.test(L[i])){h+="<li>"+inl(L[i].replace(/^\s*[-*•]\s+/,""))+"</li>";i++}o.push(h+"</ul>");continue}
+if(/^\s*\d+[.)]\s+/.test(l)){let h="<ol>";while(i<L.length&&/^\s*\d+[.)]\s+/.test(L[i])){h+="<li>"+inl(L[i].replace(/^\s*\d+[.)]\s+/,""))+"</li>";i++}o.push(h+"</ol>");continue}
+if(!l.trim()){i++;continue}
+let p=[];while(i<L.length&&L[i].trim()&&!/^(#{1,4}\s|\s*[-*•]\s|\s*\d+[.)]\s|\s*\|)/.test(L[i])){p.push(L[i]);i++}
+if(!p.length){p.push(L[i]);i++}o.push("<p>"+p.map(inl).join("<br>")+"</p>")}
+return o.join("")}
+
+const cand=n=>[{id:"c"+n+"_id",label:"Código del candidato "+n,type:"input",ph:"Ej.: C-0"+n,box:n},{id:"c"+n+"_ev",label:"Evidencias del candidato "+n+" (notas de entrevista, trayectoria profesional resumida)",type:"textarea",rows:6}];
+const MODS=[
+{id:"perfil",t:"1 · Perfil de puesto",s:"Descripción, funciones, competencias",d:"Genera la descripción del puesto, responsabilidades, competencias técnicas y conductuales, requisitos mínimos y deseables e indicadores de desempeño.",
+ f:[{id:"p_emp",label:"Contexto de la empresa o área (opcional)",type:"textarea",rows:3},{id:"p_req",label:"Requisitos o restricciones ya definidos (opcional)",type:"textarea",rows:3}],
+ need:[],task:v=>`TAREA: Diseñar el PERFIL DEL PUESTO. Incluye: descripción del puesto, objetivo, responsabilidades y funciones principales, competencias técnicas y conductuales (con definición observable y nivel esperado), requisitos mínimos y deseables, e indicadores de desempeño (KPI) asociados. Revisa que ningún requisito introduzca sesgos (p. ej. edad, género, residencia) y señala los que detectes.\nContexto de la empresa/área: ${v.p_emp||"no informado"}\nRequisitos/restricciones: ${v.p_req||"no informados"}`},
+{id:"entrevista",t:"2 · Entrevista por competencias",s:"STAR, repreguntas, matriz",d:"Crea una entrevista estructurada con preguntas STAR, preguntas técnicas, repreguntas y matriz de evaluación con criterios definidos antes de entrevistar.",
+ f:[{id:"e_n",label:"Extensión de la entrevista",type:"select",opts:["Breve (6–8 preguntas, ~45 min)","Estándar (10–12 preguntas, ~60 min)","Extensa (14–16 preguntas, ~90 min)"]},{id:"e_nota",label:"Aspectos a profundizar (opcional)",type:"textarea",rows:3}],
+ need:[],task:v=>`TAREA: Diseñar una ENTREVISTA ESTRUCTURADA POR COMPETENCIAS. Extensión: ${v.e_n}. Para cada competencia: 1–2 preguntas conductuales formuladas con metodología STAR, preguntas técnicas del puesto, repreguntas de profundización (Situación, Tarea, Acción, Resultado) y una MATRIZ DE EVALUACIÓN con descriptores observables para los niveles 1 a 5 y la opción "Pendiente de evaluación". Define los criterios antes de evaluar. Añade recomendaciones de aplicación igualitaria (mismas preguntas para todos) y una lista de preguntas que NO deben hacerse por riesgo de sesgo.\nAspectos a profundizar: ${v.e_nota||"ninguno"}`},
+{id:"evaluacion",t:"3 · Evaluación de candidato",s:"Matriz 1–5 con evidencias",d:"Analiza las evidencias de un candidato frente a los requisitos del puesto. Cada puntuación se justifica con evidencia observable.",
+ f:[...cand(1).map(x=>({...x,box:0})),],need:["c1_ev"],task:v=>`TAREA: EVALUACIÓN ESTRUCTURADA de un candidato. Código: ${v.c1_id||"C-01"}.\nCompara las competencias demostradas con los requisitos del puesto. Entrega: (1) matriz comparativa por competencia con puntuación 1–5 o "Pendiente de evaluación", evidencia citada y justificación; (2) fortalezas; (3) áreas de mejora; (4) aspectos que requieren verificación, con preguntas de validación; (5) recomendación sobre cómo continuar el proceso (sin recomendar contratación ni exclusión automática).\nEVIDENCIAS PROPORCIONADAS (única fuente; no completes datos faltantes):\n${v.c1_ev}`},
+{id:"comparacion",t:"4 · Comparación de candidatos",s:"Mismos criterios, hasta 3",d:"Evalúa hasta tres candidatos con los mismos criterios y compara sus evidencias. Deja vacíos los candidatos que no necesites.",
+ f:[...cand(1),...cand(2),...cand(3)],need:["c1_ev","c2_ev"],task:v=>{let c="";[1,2,3].forEach(n=>{if(v["c"+n+"_ev"])c+=`\n--- CANDIDATO ${v["c"+n+"_id"]||"C-0"+n} ---\n${v["c"+n+"_ev"]}\n`});return `TAREA: COMPARAR candidatos aplicando exactamente los mismos criterios. Entrega: (1) matriz comparativa competencia × candidato con puntuación 1–5 o "Pendiente de evaluación" y la evidencia clave de cada celda; (2) fortalezas y aspectos por desarrollar de cada uno; (3) diferencias relevantes entre candidatos con fundamento; (4) información pendiente de validar y preguntas sugeridas; (5) recomendaciones para la siguiente etapa, sin ranking de contratación automático. Si la información de un candidato es desigual, adviértelo porque limita la comparabilidad.\nEVIDENCIAS (única fuente):${c}`}},
+{id:"informe",t:"5 · Informe de selección",s:"Informe ejecutivo para decidir",d:"Genera el informe profesional para quien toma la decisión final. Puedes pegar una evaluación previa generada en los módulos 3 o 4.",
+ f:[...cand(1).map(x=>({...x,box:0})),{id:"i_prev",label:"Evaluación o comparación previa (opcional)",type:"textarea",rows:5,fill:true}],need:["c1_ev"],task:v=>`TAREA: Elaborar el INFORME DE SELECCIÓN ejecutivo. Incluye: código del candidato (${v.c1_id||"C-01"}), puesto, competencias evaluadas, evidencias identificadas, fortalezas, aspectos por desarrollar, preguntas pendientes de validación, recomendaciones para continuar el proceso, y una nota sobre posibles sesgos. Recuerda que la decisión final es humana.\nEVIDENCIAS:\n${v.c1_ev}\nEVALUACIÓN PREVIA: ${v.i_prev||"no proporcionada"}`}
+];
+const EX={g_puesto:"Supervisor de Producción",g_resp:"Supervisar un turno de producción en planta industrial (líneas de ensamblado); planificar y asignar tareas; cumplir metas de producción, calidad y plazos; velar por seguridad e higiene; gestionar mantenimiento básico y paradas; liderar y coordinar un equipo operativo; reportar indicadores (OEE, productividad, desperdicio).",g_comp:""};
+let cur=0,out={},ctl=null,busy=false;const vals={};
+const BIAS=/\b(edad|años de edad|joven|mayor de|embaraz\w*|casad[oa]s?|solter[oa]s?|hijos?|religi\w+|nacionalidad|extranjer\w+|fotograf\w+|foto|apariencia|g[eé]nero|sexo|orientaci[oó]n sexual|discapacidad|domicilio|barrio)\b/gi;
+
+function nav(){$("#nav").innerHTML="";MODS.forEach((m,i)=>{const b=document.createElement("button");b.type="button";b.className=i===cur?"on":"";b.innerHTML=`${m.t}<small>${m.s}</small>`;b.onclick=()=>{saveVals();cur=i;nav();form();show()};$("#nav").append(b)})}
+function saveVals(){document.querySelectorAll("#mod [data-f]").forEach(e=>vals[e.dataset.f]=e.value)}
+function form(){const m=MODS[cur];let h=`<div class="card"><h2>${m.t.slice(4)}</h2><div class="d">${m.d}</div>`;
+m.f.forEach(f=>{const v=esc(vals[f.id]||"");const lab=`<label for="${f.id}">${f.label}</label>`;
+if(f.box!==undefined&&f.box>0)h+=`<div class="cand"><h3>Candidato ${f.box}</h3>`;
+if(f.type==="input")h+=lab+`<input id="${f.id}" data-f="${f.id}" value="${v}" placeholder="${f.ph||""}">`;
+else if(f.type==="select")h+=lab+`<select id="${f.id}" data-f="${f.id}">${f.opts.map(o=>`<option${vals[f.id]===o?" selected":""}>${o}</option>`).join("")}</select>`;
+else h+=lab+`<textarea id="${f.id}" data-f="${f.id}" style="min-height:${(f.rows||4)*22}px">${v}</textarea>`+(f.fill?`<div class="btns" style="margin-top:6px"><button type="button" class="s" id="fillp">Insertar último resultado de los módulos 3 o 4</button></div>`:"");
+if(f.id.endsWith("_ev")&&f.box!==undefined)h+="</div>"});
+h+=`<div id="bias"></div><div class="btns"><button class="p" id="go" type="button">Generar con Gemini AI</button></div><div class="err" id="er"></div></div>`;
+$("#mod").innerHTML=h;
+if($("#fillp"))$("#fillp").onclick=()=>{const t=out.comparacion||out.evaluacion;if(t){$("#i_prev").value=t;vals.i_prev=t}};
+$("#go").onclick=run;document.querySelectorAll("#mod [data-f]").forEach(e=>e.addEventListener("input",biasCheck))}
+
+function allText(){saveVals();return Object.values(vals).join(" ")+" "+["g_puesto","g_resp","g_comp"].map(i=>$("#"+i).value).join(" ")}
+function biasCheck(){const ms=[...new Set((allText().match(BIAS)||[]).map(s=>s.toLowerCase()))];
+$("#bias").innerHTML=ms.length?`<div class="warn"><b>Posible riesgo de sesgo:</b> detecté términos como “${ms.slice(0,6).join("”, “")}”. Verificá que no se usen como criterio de selección; TalentMatch AI los excluirá de la valoración y lo señalará en el resultado.</div>`:""}
+function show(){const t=out[MODS[cur].id];$("#out").innerHTML=t?md(t):'<span class="ph">La respuesta de la IA aparecerá aquí.</span>';$("#cp").disabled=$("#dl").disabled=!t;$("#st").textContent=t?"Resultado del módulo “"+MODS[cur].t.slice(4)+"”.":"Aún no se generó nada en este módulo."}
+
+// Función para llamar a la API de Google Gemini
+async function callGeminiAPI(apiKey, prompt, signal) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: signal,
+    body: JSON.stringify({
+      contents: [{
+        role: "user",
+        parts: [{ text: prompt }]
+      }]
+    })
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error?.message || `Error HTTP ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+async function run(){
+  if(busy)return;
+  saveVals();
+  const m=MODS[cur], er=$("#er");
+  er.textContent="";
+
+  const apiKey = $("#g_key").value.trim() || GEMINI_API_KEY;
+  if(!apiKey){
+    er.textContent = "Ingresá tu Google Gemini API Key para continuar.";
+    return;
+  }
+
+  const g={puesto:$("#g_puesto").value.trim(),resp:$("#g_resp").value.trim(),comp:$("#g_comp").value.trim()};
+  if(!g.puesto){er.textContent="Indicá el puesto a cubrir en el contexto del proceso.";return}
+  for(const n of m.need){
+    if(!(vals[n]||"").trim()){er.textContent="Faltan las evidencias del candidato: sin información observable no se puede evaluar.";return}
+  }
+
+  const prompt=`${SYSTEM}\n\n=== CONTEXTO DEL PROCESO ===\nPuesto: ${g.puesto}\nResponsabilidades: ${g.resp||"NO PROPORCIONADAS: lo que propongas debe marcarse como borrador a validar con el responsable"}\nCompetencias definidas: ${g.comp||"no definidas: proponlas"}\n\n=== ${m.task(vals)}\n\nResponde en Markdown con tablas donde corresponda.`;
+
+  busy=true;
+  ctl=new AbortController();
+  $("#go").disabled=true;
+  $("#stop").hidden=false;
+  $("#st").textContent="Generando con Gemini AI...";
+
+  try {
+    const text = await callGeminiAPI(apiKey, prompt, ctl.signal);
+    out[m.id] = text;
+    $("#out").innerHTML = md(text);
+    $("#st").textContent = "Listo.";
+  } catch(e) {
+    if(e.name === "AbortError"){
+      er.textContent = "Generación detenida por el usuario.";
+    } else {
+      er.textContent = "Error al conectar con Gemini: " + e.message;
+    }
+    $("#st").textContent = "";
+  } finally {
+    busy=false;
+    $("#go").disabled=false;
+    $("#stop").hidden=true;
+    show();
+  }
+}
+
+$("#stop").onclick=()=>ctl&&ctl.abort();
+$("#cp").onclick=async()=>{try{await navigator.clipboard.writeText(out[MODS[cur].id]);$("#st").textContent="Copiado."}catch(e){$("#st").textContent="No se pudo copiar."}};
+$("#dl").onclick=()=>{
+  const blob = new Blob([out[MODS[cur].id]], {type: "text/markdown"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "talentmatch-" + MODS[cur].id + ".md";
+  a.click();
+};
+
+$("#ex").onclick=()=>{Object.entries(EX).forEach(([k,v])=>$("#"+k).value=v);biasCheck()};
+["g_puesto","g_resp","g_comp"].forEach(i=>$("#"+i).addEventListener("input",biasCheck));
+
+nav();form();show();
+</script>
+</body>
+</html>
